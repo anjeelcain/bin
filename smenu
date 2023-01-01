@@ -1,0 +1,9 @@
+#!/bin/sh
+WID=$(pfw)
+#perl -MPOSIX -e 'setsid; exec @ARGV';  
+
+printf '\033[32m->\033[m %s' "Run: " ; read input
+if inp=$(command -v -- "$input") \
+        && [ -z "${inp##/*}" ] && [ -x "$inp" ]; then
+        nohup "$input" >/dev/null & killw "$WID"
+fi
