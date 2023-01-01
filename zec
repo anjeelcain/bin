@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ffmpeg \
+    -f x11grab \
+    -video_size 1920x1080 \
+    -i :0.0+0,0 \
+    -pix_fmt yuv420p \
+    -framerate 30 "$1"
