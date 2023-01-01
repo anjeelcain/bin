@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# Simple script to download, convert to flac and attach the thumbnail
+
+yt-dlp \
+    -x \
+    --write-thumbnail  \
+    --audio-format mp3 \
+    --add-metadata \
+    --parse-metadata ":(?P<meta_synopsis>)" \
+    --parse-metadata ":(?P<meta_comment>)" \
+    --parse-metadata ":(?P<meta_description>)" \
+    --parse-metadata ":(?P<meta_purl>)" \
+    --parse-metadata ":(?P<meta_date>)" \
+    --metadata-from-title '%(artist)s - %(title)s' \
+    -o '%(title)s.%(ext)s' \
+    "$@" 
+
+for f in *.webp ;do
+mv -- "$f" "${f%.webp}.thumb"
+done
+
+rm Album*
+
+# Crop the edges and resize
+ mogrify \
+    -fuzz 30% \
+    -trim  \
+    +repage \
+    -shave 7x7 \
+    -resize 500x500^ \
+    -format jpg \
+    "*.thumb"
+
+for file in *.mp3; 
+do
+   echo "${file%.*}.jpg" 
+    ffmpeg -hide_banner -loglevel error -i "$file" -i "${file%.*}.jpg" -map 0:a -map 1 -c:a flac -id3v2_version 3 -disposition:1 attached_pic -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" "${file%.mp3}.flac"; 
+done && rm ./*.mp3 ./*.jpg ./*.webp ./*.thumb 2>/dev/null
+
+# Automatically organize music by artist/album.
+for file in *.flac;
+do
+    album=$(ffprobe -v error -print_format flat -show_format "$file" | sed -nE 's/format.tags.album="(.+)"/\1/p')
+    artist=$(ffprobe -v error -print_format flat -show_format "$file" | sed -nE 's/format.tags.artist="(.+)"/\1/p')
+    mkdir -p "$artist"/"$album"
+    mv "$file" "$artist"/"$album"
+done
+
