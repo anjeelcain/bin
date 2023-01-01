@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Change filenames
+
+for f in "$PWD"/*.srt
+do
+	out="$(echo $f  | awk -F '.' 'OFS="." {print $6,$14}')"
+	mv $f $out
+done 
+
+
+
