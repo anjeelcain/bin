@@ -1,0 +1,12 @@
+#!/bin/sh
+
+d=$(date +%Y-%m-%d-%S)
+case "$@" in
+    "-s") 
+        import -window root /tmp/full-"$d".png
+        ;;
+    *)
+        import png:/tmp/"$d".png 
+        xclip  -t 'image/png' -selection 'clipboard' -i /tmp/"$d".png        
+        ;;
+esac
