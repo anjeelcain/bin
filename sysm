@@ -1,8 +1,7 @@
 #!/bin/sh
 
 weather(){
-  get_weather=$(curl -s wttr.in/?format="%t") 
-  printf "weather %s\n" "${get_weather##+}" 
+  printf "weather %s\n" $(curl -s wttr.in/?format="%t") 
 }
 
 cpu_temp(){
