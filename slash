@@ -2,11 +2,7 @@
 #
 # Change filenames
 
-for f in "$PWD"/*.srt
+for f in *.mkv
 do
-	out="$(echo $f  | awk -F '.' 'OFS="." {print $6,$14}')"
-	mv $f $out
+	mv "$f" "$(echo "$f"  | awk -F '.' 'OFS="." {print $4,$11}')"
 done 
-
-
-
