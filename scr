@@ -1,12 +1,15 @@
 #!/bin/sh
 
-d=$(date +%Y-%m-%d-%S)
+mkdir -p "$HOME/med"
+
+
 case "$@" in
     "-s") 
-        import -window root /tmp/full-"$d".png
+        import -window root "$HOME"/med/full-"$(date +%Y-%m-%d-%S)".png
         ;;
     *)
-        import png:/tmp/"$d".png 
-        xclip  -t 'image/png' -selection 'clipboard' -i /tmp/"$d".png        
+        import png:"$HOME"/med/ss.png 
+        xclip  -t 'image/png' -selection 'clipboard' -i "$HOME"/med/ss.png
+        mv "$HOME"/med/ss.png "$HOME"/med/"$(date +%Y-%m-%d-%S)".png 
         ;;
 esac
