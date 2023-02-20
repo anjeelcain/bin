@@ -2,7 +2,6 @@
 
 mkdir -p "$HOME/med"
 
-
 case "$@" in
     "-s") 
         import -window root "$HOME"/med/full-"$(date +%Y-%m-%d-%S)".png
