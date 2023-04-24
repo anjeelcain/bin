@@ -28,18 +28,19 @@ rm Album*
     -trim  \
     +repage \
     -shave 7x7 \
-    -resize 500x500^ \
+    -resize 500x500 \
     -format jpg \
     "*.thumb"
 
 for file in *.mp3; 
 do
    echo "${file%.*}.jpg" 
-    ffmpeg -hide_banner -loglevel error -i "$file" -i "${file%.*}.jpg" -map 0:a -map 1 -c:a flac -id3v2_version 3 -disposition:1 attached_pic -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" "${file%.mp3}.flac"; 
-done && rm ./*.mp3 ./*.jpg ./*.webp ./*.thumb 2>/dev/null
+   mv "${file}" "${file%.*}.mus"
+   ffmpeg -y -hide_banner -loglevel error -i "${file%.*}.mus" -i "${file%.*}.jpg" -map 0 -map 1 -c copy -id3v2_version 3 -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" "${file%.*}.mp3"; 
+done 
 
 # Automatically organize music by artist/album.
-for file in *.flac;
+for file in *.mp3;
 do
     album=$(ffprobe -v error -print_format flat -show_format "$file" | sed -nE 's/format.tags.album="(.+)"/\1/p')
     artist=$(ffprobe -v error -print_format flat -show_format "$file" | sed -nE 's/format.tags.artist="(.+)"/\1/p')
@@ -47,3 +48,4 @@ do
     mv "$file" "$artist"/"$album"
 done
 
+rm ./*.mus ./*.jpg ./*.webp ./*.thumb 2>/dev/null
