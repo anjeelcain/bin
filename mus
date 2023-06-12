@@ -24,11 +24,9 @@ rm Album*
 
 # Crop the edges and resize
  mogrify \
-    -fuzz 30% \
+    -fuzz 10% \
     -trim  \
     +repage \
-    -shave 7x7 \
-    -resize 500x500 \
     -format jpg \
     "*.thumb"
 
