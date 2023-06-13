@@ -2,7 +2,7 @@
 #
 # Play random musics from music directory
 
-exec mpv --geometry=230x230+30+90 \
+exec mpv --geometry=270x270+30+90 \
          --shuffle \
          "$@" \
          -- ~/mus/
